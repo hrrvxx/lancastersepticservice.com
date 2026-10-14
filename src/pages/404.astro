@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, tel } from '../data/site';
+---
+<Base title={`Page Not Found | ${site.name}`} description="The page you were looking for could not be found.">
+  <section class="section" style="text-align:center;">
+    <div class="container" style="max-width:640px;">
+      <h1>Page Not Found</h1>
+      <p>That page doesn't exist or has moved. Head back to the <a href="/">home page</a>, browse our <a href="/services">deck services</a>, or call <a href={tel}>{site.phoneDisplay}</a>.</p>
+    </div>
+  </section>
+</Base>

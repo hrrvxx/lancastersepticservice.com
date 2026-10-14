@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+const updated = 'October 7, 2026';
+---
+<Base title={`Terms of Service | ${site.name}`} description={`Terms for using the ${site.name} website and requesting septic services.`}>
+  <section class="section">
+    <div class="container legal-page" style="max-width:780px;">
+      <h1>Terms of Service</h1>
+      <p><em>Last updated: {updated}</em></p>
+      <h2>About us</h2>
+      <p>{site.name} is a locally owned septic service company serving Lancaster and nearby Antelope Valley communities. These terms cover your use of this website and requests you submit through it.</p>
+      <h2>Quotes</h2>
+      <p>Repair and replacement quotes are free and carry no obligation. Prices, scope and schedules provided online or by phone are preliminary. They are confirmed only after we see the system and provide a written quote or contract.</p>
+      <h2>Our quality guarantee</h2>
+      <p>We stand behind our work. The specific terms of our workmanship guarantee, including what it covers and for how long, are set out in the written contract for your project. Manufacturer warranties on septic tanks, pumps and parts are provided by the manufacturer under their own terms. If anything conflicts with this page, your written contract controls.</p>
+      <h2>Permits and codes</h2>
+      <p>Pumping schedules and any permit, inspection or reporting requirements are set by your county and local authorities. They are confirmed for each job and addressed in your quote or contract. Inspection findings reflect the condition of the system on the day it was inspected.</p>
+      <h2>Website content</h2>
+      <p>Articles, cost factors, timelines and images on this site are general information and inspiration only. Gallery images are illustrations of septic equipment and work and may not depict specific completed jobs.</p>
+      <h2>Communications</h2>
+      <p>By submitting a request, you agree that we and our service partners may contact you about your project by phone, text or email, as described in our <a href="/privacy">Privacy Policy</a>. You can opt out at any time.</p>
+      <h2>Limitation of liability</h2>
+      <p>To the fullest extent allowed by law, {site.name} is not liable for damages arising from your use of this website. Work performed for you is governed by your written contract.</p>
+      <h2>Changes</h2>
+      <p>We may update these terms at any time. Continued use of the site means you accept the current version.</p>
+    </div>
+  </section>
+</Base>

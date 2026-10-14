@@ -1,0 +1,95 @@
+---
+// One service in one city, e.g. /service-areas/palmdale/septic-repair.
+// Unique local copy comes from src/data/local/{city}.json; benefits and two general FAQs are shared.
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Icon from '../../../components/Icon.astro';
+import Faq from '../../../components/Faq.astro';
+import Cta from '../../../components/Cta.astro';
+import LocalArea from '../../../components/LocalArea.astro';
+import { areas } from '../../../data/areas';
+import { services } from '../../../data/services';
+import { localServices, serviceHref } from '../../../data/localServices';
+import { site, tel, withBrand } from '../../../data/site';
+import type { Area, LocalService, Service } from '../../../data/types';
+
+export function getStaticPaths() {
+  return areas.flatMap(area =>
+    services
+      .filter(service => localServices[area.slug]?.[service.slug])
+      .map(service => ({
+        params: { slug: area.slug, service: service.slug },
+        props: { area, service, local: localServices[area.slug][service.slug] },
+      })),
+  );
+}
+const { area: a, service: s, local: l } = Astro.props as { area: Area; service: Service; local: LocalService };
+// Shared service copy is written for the main city; name this city instead.
+const localize = (t: string) => t.replaceAll(site.city, a.name);
+const faqs = [...l.faqs, ...s.faqs.slice(0, 2).map(f => ({ q: localize(f.q), a: localize(f.a) }))];
+const benefits = s.benefits.map(b => ({ title: localize(b.title), text: localize(b.text) }));
+const otherServices = services.filter(x => x.slug !== s.slug);
+const url = `${site.url}/service-areas/${a.slug}/${s.slug}`;
+const schema = [
+  {
+    '@type': 'Service',
+    name: `${s.name} in ${a.name}, ${site.stateAbbr}`,
+    serviceType: s.name,
+    description: l.metaDescription,
+    provider: { '@id': `${site.url}/#org` },
+    areaServed: { '@type': 'City', name: a.name },
+    url,
+  },
+  { '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+<Base title={withBrand(`${s.name} in ${a.name}, ${site.stateAbbr}`)} description={l.metaDescription} nav="services" schema={schema} image={`/images/gallery/${s.slug}.jpg`}>
+  <PageHero title={`${s.name} in ${a.name}, ${site.state}`} sub={l.heroSub} image={s.slug}
+    crumbs={[{ href: '/service-areas', label: 'Service Areas' }, { href: `/service-areas/${a.slug}`, label: a.name }, { label: s.name }]} />
+
+  <section class="section service-detail-section" aria-labelledby="local-service-heading">
+    <div class="container service-detail-inner">
+      <div class="service-detail-body">
+        <picture>
+          <source type="image/webp" srcset={`/images/gallery/${s.slug}-2.webp`} />
+          <img src={`/images/gallery/${s.slug}-2.jpg`} alt={`${s.name} in ${a.name}, ${site.state}`} loading="lazy" decoding="async" width="800" height="450" style="width:100%;height:260px;object-fit:cover;border-radius:10px;margin-bottom:24px;" />
+        </picture>
+        <h2 id="local-service-heading">{s.name} for {a.name} Homes</h2>
+        {l.paragraphs.map(p => <p>{p}</p>)}
+        <h3 style="margin:28px 0 10px;font-size:16px;font-weight:600;">Where We Work in {a.name}</h3>
+        <p>{a.neighborhoods.join(' · ')}</p>
+        <p><em>{a.driveNote}</em></p>
+        <p class="related-inline"><strong>More:</strong> <a href={`/service-areas/${a.slug}#services`}>All septic services in {a.name}</a> · <a href={`/service-areas/${a.slug}`}>Septic service in {a.name}</a></p>
+        <a href="/contact" class="btn btn-primary"><span>Get a Free {s.name} Quote in {a.name}</span></a>
+      </div>
+      <aside class="service-detail-aside" aria-label="Quick contact">
+        <div class="service-benefits">
+          <h3>Key Benefits</h3>
+          <ul class="benefits-list">
+            {benefits.map(b => <li><Icon name="check" size={16} /><span><strong>{b.title}.</strong> {b.text}</span></li>)}
+          </ul>
+        </div>
+        <div class="service-benefits" style="margin-top:0;">
+          <a href={tel} class="btn btn-primary" style="width:100%;justify-content:center;"><Icon name="phone" /> {site.phoneDisplay}</a>
+          <p class="aside-note">Free repair quotes in {a.name}.</p>
+          <a href="/contact" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:10px;">Request Online</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Faq faqs={faqs} eyebrow={`${s.name} in ${a.name}`} />
+
+  <section class="section" aria-label={`${a.name} area`}>
+    <div class="container" style="max-width:860px;"><LocalArea area={a} service={s} /></div>
+  </section>
+
+  <section class="section related-services-section" aria-labelledby="related-heading">
+    <div class="container">
+      <div class="section-header"><p class="eyebrow">{a.name}</p><h2 id="related-heading">Other Septic Services in {a.name}</h2></div>
+      <div class="related-services-grid">{otherServices.map(o => <a href={serviceHref(a.slug, o.slug)} class="related-card">{o.name}</a>)}</div>
+    </div>
+  </section>
+
+  <Cta city={a.name} />
+</Base>

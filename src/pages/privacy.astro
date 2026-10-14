@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+const updated = 'October 7, 2026';
+---
+<Base title={`Privacy Policy | ${site.name}`} description={`How ${site.name} collects, uses and shares information submitted through this website.`}>
+  <section class="section">
+    <div class="container legal-page" style="max-width:780px;">
+      <h1>Privacy Policy</h1>
+      <p><em>Last updated: {updated}</em></p>
+      <h2>Who we are</h2>
+      <p>{site.name} ({site.url.replace('https://', '')}) is a locally owned septic service company serving Lancaster and nearby Antelope Valley communities. This policy explains what we collect through this website and how we use it.</p>
+      <h2>Information we collect</h2>
+      <p>When you submit a form or call us, we collect the information you provide, such as your name, phone number, ZIP code and project details. Calls and texts to our number may be recorded or logged so we can route your request accurately. Like most websites, we also receive basic technical data such as your IP address, browser type and pages visited. We use Google Analytics, which sets cookies, to understand how visitors use the site; you can opt out with Google's browser add-on or by blocking cookies.</p>
+      <h2>How we use and share it</h2>
+      <p>We use your information to respond to your request, schedule pumping and service visits, and complete the work you ask for. <strong>By submitting a request, you agree that we and our service partners and subcontractors may use your contact information and request details to contact you by phone, text or email about your request.</strong> Message and data rates may apply. We do not sell your information to data brokers.</p>
+      <p>We may also share information with service providers who help us operate this website and our phone and email systems, or when required by law.</p>
+      <h2>Your choices</h2>
+      <p>You can ask us to stop contacting you, or to delete the information you submitted, by calling {site.phoneDisplay}. Reply STOP to any text message to opt out of texts.</p>
+      <h2>Data security and retention</h2>
+      <p>We use reasonable safeguards to protect the information we collect and keep it only as long as needed to handle your request and meet legal obligations.</p>
+      <h2>Children</h2>
+      <p>This website is not directed to children under 13, and we do not knowingly collect their information.</p>
+      <h2>Changes</h2>
+      <p>We may update this policy from time to time. The date above shows when it was last changed.</p>
+    </div>
+  </section>
+</Base>

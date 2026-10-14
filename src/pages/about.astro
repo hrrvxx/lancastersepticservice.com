@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import Cta from '../components/Cta.astro';
+import { about, home } from '../data/home';
+---
+<Base title={about.metaTitle} description={about.metaDescription} nav="about">
+  <PageHero title={about.heroTitle} sub={about.heroSub} image="gallery-5" crumbs={[{ label: 'About' }]} />
+  <section class="section about-section" aria-labelledby="about-story-heading">
+    <div class="container about-inner">
+      <div class="about-img-wrap"><picture><source type="image/webp" srcset="/images/gallery/septic-inspection-2.webp" /><img src="/images/gallery/septic-inspection-2.jpg" alt="Looking into an open septic tank during an inspection" loading="lazy" decoding="async" width="600" height="450" /></picture></div>
+      <div class="about-text">
+        <p class="eyebrow">Our Story</p>
+        <h2 id="about-story-heading">{about.storyTitle}</h2>
+        {about.story.map(p => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+  <section class="section values-section" aria-labelledby="values-heading">
+    <div class="container">
+      <div class="section-header"><p class="eyebrow">{about.values.eyebrow}</p><h2 id="values-heading">{about.values.title}</h2><p class="section-sub">{about.values.sub}</p></div>
+      <div class="why-grid">
+        {about.values.cards.map((c, i) => <div class="why-card"><div class="why-icon"><Icon name={['clipboard', 'users', 'chat'][i % 3]} size={26} /></div><h3>{c.title}</h3><p>{c.text}</p></div>)}
+      </div>
+    </div>
+  </section>
+  <section class="section process-section" aria-labelledby="process-heading">
+    <div class="container">
+      <div class="section-header"><p class="eyebrow">{home.process.eyebrow}</p><h2 id="process-heading">{home.process.title}</h2><p class="section-sub">{home.process.sub}</p></div>
+      <div class="process-steps">
+        {home.process.steps.map((s, i) => (
+          <div class="process-step"><div class="step-num">{String(i + 1).padStart(2, '0')}</div><div class="step-icon-wrap"><Icon name={['phone', 'users', 'check'][i]} size={28} /></div><h3>{s.title}</h3><p>{s.text}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <Cta />
+</Base>

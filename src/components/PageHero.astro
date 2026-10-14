@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import LeadForm from './LeadForm.astro';
+import { site, tel } from '../data/site';
+// form: compact lead form beside the heading (every page hero has one; the homepage has its own hero).
+interface Props { title: string; sub: string; image?: string; crumbs?: { href?: string; label: string }[]; form?: boolean }
+const { title, sub, image = 'gallery-1', crumbs = [], form = true } = Astro.props;
+const here = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/\/$/, '') || '/';
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [{ label: 'Home', href: '/' }, ...crumbs].map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href ?? here, site.url).href,
+  })),
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+<section class="page-hero" aria-label={`${title} page header`}>
+  <picture>
+    <source type="image/webp" srcset={`/images/gallery/${image}.webp`} />
+    <img class="page-hero-bg" src={`/images/gallery/${image}.jpg`} alt={title} loading="eager" decoding="async" width="1920" height="600" />
+  </picture>
+  <div class="page-hero-overlay" aria-hidden="true"></div>
+  <div class:list={['container page-hero-inner', { 'page-hero-inner--form': form }]}>
+    <div class="page-hero-text">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      {crumbs.map(c => (
+        <>
+          <span aria-hidden="true">&rsaquo;</span>
+          {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+        </>
+      ))}
+    </nav>
+    <h1>{title}</h1>
+    <p class="page-hero-sub">{sub}</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+      <a href={tel} class="btn btn-call"><span><Icon name="phone" /> Call for a Free Quote</span></a>
+      {!form && <a href="/contact" class="btn btn-outline-white"><span>Request Service Online</span></a>}
+    </div>
+    </div>
+    {form && <div class="page-hero-form"><LeadForm id="hero-form" /></div>}
+  </div>
+</section>

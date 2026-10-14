@@ -1,0 +1,32 @@
+{
+  // Cloudflare Worker serving the static Astro build, plus the /api/lead form endpoint.
+  // Secrets (set in the dashboard, never committed): RESEND_API_KEY, TURNSTILE_SECRET, HUB_FORM_KEY.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lancastersepticservice-com",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
+  },
+  "vars": {
+    "SITE_NAME": "Lancaster Septic Service",
+    "SITE_PHONE": "(818) 214-7434",
+    "LEAD_TO": "septic@lancastersepticservice.com",
+    "MAIL_FROM": "Lancaster Septic Service <septic@lancastersepticservice.com>",
+    // RNR dashboard: form leads are also stored there.
+    "HUB_URL": "https://dashboard.dropservice.agency",
+    "HUB_SITE_ID": "lancasterseptic",
+    // Form spam scoring: ZIPs outside these prefixes count against a lead (Antelope Valley = 935xx, Agua Dulce = 913xx).
+    "SERVICE_ZIP_PREFIXES": "93,91"
+  },
+  // 5 form submissions per minute per visitor IP.
+  "ratelimits": [
+    { "name": "LEAD_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
+  ],
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}

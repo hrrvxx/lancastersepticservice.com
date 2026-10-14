@@ -1,0 +1,223 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import AreasChips from '../components/AreasChips.astro';
+import { site, tel, featuredServices } from '../data/site';
+import { home } from '../data/home';
+import { services } from '../data/services';
+import { areas } from '../data/areas';
+
+const whyIcons = ['droplet', 'clipboard', 'sun', 'snow', 'search', 'users'];
+const gallery = ['septic-tank-pumping', 'seepage-pit-pumping', 'septic-inspection', 'septic-repair', 'leach-field-repair', 'septic-installation', 'septic-risers', 'septic-line-jetting'];
+const nameOf = (slug: string) => services.find(s => s.slug === slug)?.name ?? slug;
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: home.faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const longforms = [
+  { id: 'materials', data: home.materials, img: 'gallery-2', alt: 'New concrete septic tank and leach line parts on a desert lot', alt2: true },
+  { id: 'pricing', data: home.pricing, img: 'gallery-3', alt: 'Vacuum truck hose and valves ready for a septic pumping visit', alt2: false },
+  { id: 'timeline', data: home.timeline, img: 'gallery-4', alt: 'Septic pump truck parked at a high desert home', alt2: true },
+];
+---
+<Base title={home.metaTitle} description={home.metaDescription} nav="home" schema={[faqSchema]} preloadHero>
+  <section class="hero" aria-label="Hero">
+    <picture>
+      <source type="image/webp" srcset="/images/hero-480w.webp 480w, /images/hero-800w.webp 800w, /images/hero.webp 1920w" sizes="100vw" />
+      <img class="hero-bg" src="/images/hero.jpg" alt="Septic pump truck at a desert home in Lancaster, California" width="1920" height="1080" fetchpriority="high" loading="eager" decoding="async" />
+    </picture>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1>Septic Tank Pumping in Lancaster, CA</h1>
+        <p class="hero-brand">{site.name}</p>
+        <p class="hero-sub">{home.heroSub}</p>
+        <a class="btn btn-call" href={tel}><Icon name="phone" /> <span>Call:</span> {site.phoneDisplay}</a>
+        <div class="hero-pills">
+          <span>&#10003; <span>Free Repair Quotes</span></span>
+          <span>&#10003; <span>Locally Owned &amp; Operated</span></span>
+          <span>&#10003; <span>Quality Guaranteed</span></span>
+        </div>
+      </div>
+      <div id="hero-form-card"><LeadForm id="lead-form" compact /></div>
+    </div>
+  </section>
+
+  <div class="trust-bar" role="list" aria-label="Highlights">
+    <div class="container trust-inner">
+      <div class="trust-item" role="listitem"><Icon name="home" size={30} /><div><strong>Free Repair Quotes</strong><span>No cost, no obligation</span></div></div>
+      <div class="trust-item" role="listitem"><Icon name="map" size={30} /><div><strong>Locally Owned</strong><span>Antelope Valley crew</span></div></div>
+      <div class="trust-item" role="listitem"><Icon name="clipboard" size={30} /><div><strong>Quality Guaranteed</strong><span>We stand behind every job</span></div></div>
+      <div class="trust-item" role="listitem"><Icon name="phone" size={28} /><div><strong>Easy to Reach</strong><span>Call anytime</span></div></div>
+    </div>
+  </div>
+
+  <section class="section services-section" aria-labelledby="services-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Septic Services</p>
+        <h2 id="services-heading">Septic Services in Lancaster, California</h2>
+        <p class="section-sub">{home.servicesSub}</p>
+      </div>
+      <div class="services-grid">
+        {featuredServices.map(slug => services.find(s => s.slug === slug)!).map(s => (
+          <a href={`/services/${s.slug}`} class="service-card">
+            <div class="card-img-wrap"><picture><source type="image/webp" srcset={`/images/gallery/${s.slug}.webp`} /><img class="card-img" src={`/images/gallery/${s.slug}.jpg`} alt={`${s.name} in Lancaster, California`} loading="lazy" decoding="async" width="400" height="210" /></picture></div>
+            <div class="card-body">
+              <h3>{s.name}</h3>
+              <p>{s.short}</p>
+              <span class="card-link"><span>Learn More</span> <Icon name="arrow" /></span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="section-cta"><a href="/services" class="btn btn-outline"><span>View All Services</span></a></div>
+    </div>
+  </section>
+
+  <div class="phone-strip" role="complementary" aria-label="Contact call to action">
+    <div class="container phone-strip-inner">
+      <div class="phone-strip-text"><strong>{home.phoneStrip.title}</strong><p>{home.phoneStrip.text}</p></div>
+      <a class="btn btn-call" href={tel}><Icon name="phone" /> <span>Call</span> {site.phoneDisplay}</a>
+    </div>
+  </div>
+
+  <section class="stats-section" aria-label="At a glance">
+    <div class="container stats-inner">
+      <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Repair Quotes</div></div>
+      <div class="stat-item"><div class="stat-num">{services.length}</div><div class="stat-label">Septic Services</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Locally Owned</div></div>
+      <div class="stat-item"><div class="stat-num">{areas.length}</div><div class="stat-label">Communities Served</div></div>
+    </div>
+  </section>
+
+  <section class="section why-section" aria-labelledby="why-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">{home.why.eyebrow}</p>
+        <h2 id="why-heading">{home.why.title}</h2>
+        <p class="section-sub">{home.why.sub}</p>
+      </div>
+      <div class="why-grid">
+        {home.why.cards.map((c, i) => (
+          <div class="why-card"><div class="why-icon"><Icon name={whyIcons[i % whyIcons.length]} size={26} /></div><h3>{c.title}</h3><p>{c.text}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section process-section" aria-labelledby="process-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">{home.process.eyebrow}</p>
+        <h2 id="process-heading">{home.process.title}</h2>
+        <p class="section-sub">{home.process.sub}</p>
+      </div>
+      <div class="process-steps">
+        {home.process.steps.map((s, i) => (
+          <>
+            {i > 0 && <div class="process-connector" aria-hidden="true"><svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8h36M30 2l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>}
+            <div class="process-step">
+              <div class="step-num">{String(i + 1).padStart(2, '0')}</div>
+              <div class="step-icon-wrap"><Icon name={['phone', 'users', 'check'][i]} size={28} /></div>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </div>
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-section" aria-labelledby="about-heading">
+    <div class="container about-inner">
+      <div class="about-img-wrap"><picture><source type="image/webp" srcset="/images/gallery/gallery-1.webp" /><img src="/images/gallery/gallery-1.jpg" alt="Technician pumping a septic tank at an Antelope Valley home" loading="lazy" decoding="async" width="600" height="450" /></picture></div>
+      <div class="about-text">
+        <p class="eyebrow">{home.about.eyebrow}</p>
+        <h2 id="about-heading">{home.about.title}</h2>
+        {home.about.paragraphs.map(p => <p>{p}</p>)}
+        <a href="/about" class="btn btn-primary"><span>Learn More About Us</span></a>
+      </div>
+    </div>
+  </section>
+
+  <Faq faqs={home.faqs} sub={home.faqSub} />
+
+  <section class="section pain-section" aria-labelledby="pain-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">{home.pain.eyebrow}</p>
+        <h2 id="pain-heading">{home.pain.title}</h2>
+        <p class="section-sub">{home.pain.sub}</p>
+      </div>
+      <div class="pain-grid">
+        {home.pain.cards.map(c => <div class="pain-card"><div class="pain-icon"><Icon name="check" size={24} /></div><h3>{c.title}</h3><p>{c.text}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section gallery-section" aria-labelledby="gallery-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Our Work</p>
+        <h2 id="gallery-heading">Septic Work Across Lancaster</h2>
+        <p class="section-sub">{home.gallerySub}</p>
+      </div>
+      <div class="gallery-grid">
+        {gallery.map((g, i) => (
+          <div class:list={['gallery-item', { 'gallery-item--large': i === 0 }]}>
+            <picture><source type="image/webp" srcset={`/images/gallery/${g}.webp`} /><img src={`/images/gallery/${g}.jpg`} alt={`${nameOf(g)} in the Lancaster area`} loading="lazy" decoding="async" width="800" height="600" /></picture>
+            <div class="gallery-overlay"><span>{nameOf(g)}</span></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section local-section" aria-labelledby="local-heading">
+    <div class="container">
+      <div class="local-inner">
+        <div class="local-header">
+          <p class="eyebrow">{home.local.eyebrow}</p>
+          <h2 id="local-heading">{home.local.title}</h2>
+          <p class="local-header-sub">{home.local.sub}</p>
+          <a href={tel} class="btn btn-primary local-header-cta"><span><Icon name="phone" /> Call Anytime</span></a>
+        </div>
+        <div class="local-content">{home.local.paragraphs.map(p => <p>{p}</p>)}</div>
+      </div>
+    </div>
+  </section>
+
+  {longforms.map((l, i) => (
+    <section class:list={['section longform-section', { 'longform-section--alt': i % 2 === 0 }]} aria-labelledby={`${l.id}-heading`}>
+      <div class="container">
+        <div class="section-header">
+          <p class="eyebrow">{l.data.eyebrow}</p>
+          <h2 id={`${l.id}-heading`}>{l.data.title}</h2>
+          <p class="section-sub">{l.data.sub}</p>
+        </div>
+        <div class:list={['longform-with-image', { 'longform-with-image--reverse': i === 1 }]}>
+          <div class="longform-image-wrap"><picture><source type="image/webp" srcset={`/images/gallery/${l.img}.webp`} /><img src={`/images/gallery/${l.img}.jpg`} alt={l.alt} loading="lazy" decoding="async" width="600" height="450" /></picture></div>
+          <div class="longform-inner">{l.data.paragraphs.map(p => <p>{p}</p>)}</div>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section areas-section" aria-labelledby="areas-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Service Area</p>
+        <h2 id="areas-heading">Septic Service Across the Antelope Valley</h2>
+        <div class="section-sub">{home.areasIntro.map(p => <p>{p}</p>)}</div>
+      </div>
+      <AreasChips />
+    </div>
+  </section>
+
+  <Cta />
+</Base>

@@ -1,0 +1,47 @@
+---
+// Local area box for a city page: unique local note, where the city sits in the region,
+// how our crew serves it, links to neighboring city pages, and an embedded map.
+import { areas } from '../data/areas';
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+import { serviceHref } from '../data/localServices';
+import type { Area, Service } from '../data/types';
+
+// With a service, nearby links go to that service in each nearby city.
+interface Props { area: Area; service?: Service }
+const { area: a, service } = Astro.props;
+const locationLine = a.locationLine
+  ?? (a.direction
+    ? `${a.name} is located in ${a.county ?? site.county}, ${a.direction} downtown ${site.city}.`
+    : `${a.name} is the heart of the ${site.region}.`);
+const nearby = a.nearby
+  .map(name => areas.find(x => x.name === name))
+  .filter((x): x is Area => Boolean(x));
+const mapQuery = encodeURIComponent(`${a.name}, ${site.stateAbbr}`);
+---
+<section class="local-area" aria-labelledby="local-area-heading">
+  <div class="local-area-body">
+    <h2 id="local-area-heading"><Icon name="map" size={20} /> Septic Service Serving {a.name}, {site.stateAbbr}</h2>
+    <p>{a.note}</p>
+    <p>{locationLine} Our crew pumps, inspects and repairs septic tanks, seepage pits and leach fields for {a.name} homes, ranches and businesses.</p>
+    <p>We're a locally owned team working across the {site.region}, so getting to {a.name} for a pumping or repair visit is part of a normal week for us. Call <a href={`tel:${site.phoneTel}`}>{site.phoneDisplay}</a> to set up a time.</p>
+    <h3>ZIP codes we serve in {a.name}</h3>
+    <p class="local-zips">{a.zips.join(' · ')}</p>
+    {nearby.length > 0 && (
+      <>
+        <h3>{service ? `${service.name} in nearby communities` : 'Also serving nearby communities'}</h3>
+        <div class="areas-chips" role="list" aria-label={`Cities near ${a.name}`}>
+          {nearby.map(n => <div class="area-chip" role="listitem"><a href={service ? serviceHref(n.slug, service.slug) : `/service-areas/${n.slug}`}>{n.name}</a></div>)}
+        </div>
+      </>
+    )}
+  </div>
+  <iframe
+    title={`Map of ${a.name}, ${site.state}`}
+    src={`https://www.google.com/maps?q=${mapQuery}&z=12&output=embed`}
+    width="100%"
+    height="320"
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+  ></iframe>
+</section>

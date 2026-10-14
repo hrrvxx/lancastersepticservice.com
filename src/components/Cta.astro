@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+import LeadForm from './LeadForm.astro';
+import { site, tel } from '../data/site';
+import { home } from '../data/home';
+// city: on city pages the heading names that city instead of the main city.
+interface Props { city?: string }
+const { city } = Astro.props;
+const title = city ? home.cta.title.replace(site.city, city) : home.cta.title;
+---
+<section class="section cta-section" aria-labelledby="cta-heading">
+  <div class="container cta-inner">
+    <div class="cta-text">
+      <h2 id="cta-heading">{title}</h2>
+      <p>{home.cta.text}</p>
+      <a href={tel} class="btn btn-call btn-call-large"><Icon name="phone" /> {site.phoneDisplay}</a>
+      <p class="cta-sub">Or fill out the form and we'll be in touch shortly.</p>
+    </div>
+    <div class="cta-form-wrap">
+      <LeadForm id="cta-form" />
+    </div>
+  </div>
+</section>

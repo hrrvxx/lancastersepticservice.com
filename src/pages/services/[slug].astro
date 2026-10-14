@@ -1,0 +1,87 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import Faq from '../../components/Faq.astro';
+import Cta from '../../components/Cta.astro';
+import { services } from '../../data/services';
+import { areas } from '../../data/areas';
+import { localService } from '../../data/localServices';
+import { site, tel, withBrand } from '../../data/site';
+import type { Service } from '../../data/types';
+
+export function getStaticPaths() {
+  return services.map(s => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+const { service: s } = Astro.props as { service: Service };
+const idx = services.findIndex(x => x.slug === s.slug);
+const others = services.filter(x => x.slug !== s.slug);
+const cities = areas.filter(a => localService(a.slug, s.slug));
+const related = [services[(idx + 1) % services.length], services[(idx + 2) % services.length]];
+const schema = [
+  {
+    '@type': 'Service',
+    name: `${s.name} in ${site.city}, ${site.stateAbbr}`,
+    serviceType: s.name,
+    description: s.metaDescription,
+    provider: { '@id': `${site.url}/#org` },
+    areaServed: { '@type': 'City', name: site.city },
+    url: `${site.url}/services/${s.slug}`,
+  },
+  { '@type': 'FAQPage', mainEntity: s.faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+<Base title={withBrand(`${s.name} in ${site.city}, ${site.stateAbbr}`)} description={s.metaDescription} nav="services" schema={schema} image={`/images/gallery/${s.slug}.jpg`}>
+  <PageHero title={`${s.name} in ${site.city}, ${site.state}`} sub={s.heroSub} image={s.slug} crumbs={[{ href: '/services', label: 'Services' }, { label: s.name }]} />
+
+  <section class="section service-detail-section" aria-labelledby="service-detail-heading">
+    <div class="container service-detail-inner">
+      <div class="service-detail-body">
+        <picture>
+          <source type="image/webp" srcset={`/images/gallery/${s.slug}-2.webp`} />
+          <img src={`/images/gallery/${s.slug}-2.jpg`} alt={`${s.name} in ${site.city}`} loading="lazy" decoding="async" width="800" height="450" style="width:100%;height:260px;object-fit:cover;border-radius:10px;margin-bottom:24px;" />
+        </picture>
+        <h2 id="service-detail-heading">About {s.name}</h2>
+        {s.intro.map(p => <p>{p}</p>)}
+        <p>Looking for a full-service <a href="/">{site.city} {site.niche}</a>? Our crew handles every service, from routine pumping to inspections, repairs and new systems.</p>
+        <p class="related-inline"><strong>Related:</strong> {related.map((r, i) => <>{i > 0 && ' · '}<a href={`/services/${r.slug}`}>{r.name}</a></>)} &mdash; <a href="/services">View All Services &rarr;</a></p>
+      </div>
+      <aside class="service-detail-aside" aria-label="Quick contact">
+        <div class="service-benefits">
+          <h3>Key Benefits</h3>
+          <ul class="benefits-list">
+            {s.benefits.map(b => <li><Icon name="check" size={16} /><span><strong>{b.title}.</strong> {b.text}</span></li>)}
+          </ul>
+        </div>
+        <div class="service-benefits" style="margin-top:0;">
+          <a href={tel} class="btn btn-primary" style="width:100%;justify-content:center;"><Icon name="phone" /> {site.phoneDisplay}</a>
+          <p class="aside-note">Call anytime. Free repair quotes.</p>
+          <a href="/contact" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:10px;">Request Online</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Faq faqs={s.faqs} eyebrow="Common Questions" />
+
+  {cities.length > 0 && (
+    <section class="section areas-section areas-section--compact" aria-labelledby="service-cities-heading">
+      <div class="container" style="text-align:center;">
+        <p class="eyebrow" style="display:block;width:100%;margin-bottom:12px;">Service Area</p>
+        <h2 id="service-cities-heading" style="font-size:clamp(20px,2.6vw,28px);margin-bottom:18px;">{s.name} Near {site.city}</h2>
+        <div class="areas-chips" role="list" aria-label={`${s.name} by city`}>
+          {cities.map(c => <div class="area-chip" role="listitem"><a href={`/service-areas/${c.slug}/${s.slug}`}>{c.name}</a></div>)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section related-services-section" aria-labelledby="related-heading">
+    <div class="container">
+      <div class="section-header"><p class="eyebrow">More Services</p><h2 id="related-heading">Other Septic Services</h2></div>
+      <div class="related-services-grid">{others.slice(0, 6).map(o => <a href={`/services/${o.slug}`} class="related-card">{o.name}</a>)}</div>
+    </div>
+  </section>
+
+  <Cta />
+</Base>

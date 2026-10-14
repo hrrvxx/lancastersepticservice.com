@@ -1,0 +1,19 @@
+---
+import { areas } from '../data/areas';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+{compact ? (
+  <section class="section areas-section areas-section--compact">
+    <div class="container" style="text-align:center;">
+      <p class="eyebrow" style="text-align:center;display:block;width:100%;margin-bottom:12px;">Service Area</p>
+      <div class="areas-chips" role="list" aria-label="Cities served" style="justify-content:center;">
+        {areas.map(a => <div class="area-chip" role="listitem"><a href={`/service-areas/${a.slug}`}>{a.name}</a></div>)}
+      </div>
+    </div>
+  </section>
+) : (
+  <div class="areas-chips" role="list" aria-label="Cities served">
+    {areas.map(a => <div class="area-chip" role="listitem"><a href={`/service-areas/${a.slug}`}>{a.name}</a></div>)}
+  </div>
+)}

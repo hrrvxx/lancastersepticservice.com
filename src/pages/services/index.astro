@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import Cta from '../../components/Cta.astro';
+import AreasChips from '../../components/AreasChips.astro';
+import { services } from '../../data/services';
+import { site, withBrand } from '../../data/site';
+---
+<Base title={withBrand('Septic Services in Lancaster, CA')} description="Septic tank pumping, seepage pit pumping, inspections, repairs, leach field work, risers and new septic systems in Lancaster, CA and the Antelope Valley." nav="services">
+  <PageHero title="Septic Services in Lancaster, California" sub="From routine septic tank pumping to inspections, repairs, leach fields and new systems, our crew handles it. Call or send a request." image="septic-tank-pumping" crumbs={[{ label: 'Services' }]} />
+  <section class="section services-section" aria-labelledby="all-services-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">All Services</p>
+        <h2 id="all-services-heading">All Septic Services</h2>
+      </div>
+      <div class="services-grid">
+        {services.map(s => (
+          <a href={`/services/${s.slug}`} class="service-card">
+            <div class="card-img-wrap"><picture><source type="image/webp" srcset={`/images/gallery/${s.slug}.webp`} /><img class="card-img" src={`/images/gallery/${s.slug}.jpg`} alt={`${s.name} in Lancaster, California`} loading="lazy" decoding="async" width="400" height="210" /></picture></div>
+            <div class="card-body"><h3>{s.name}</h3><p>{s.short}</p><span class="card-link"><span>Learn More</span> <Icon name="arrow" /></span></div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <AreasChips compact />
+  <Cta />
+</Base>

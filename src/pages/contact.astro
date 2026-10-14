@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import AreasChips from '../components/AreasChips.astro';
+import { site, tel, withBrand } from '../data/site';
+---
+<Base title={withBrand('Schedule Septic Pumping in Lancaster')} description="Schedule septic tank pumping, an inspection or a repair in Lancaster, CA. Send the details or call and our crew will set up a time that works for you." nav="contact">
+  <PageHero title="Schedule Septic Service" sub="Share a few details and our team will reach out to set up your pumping, inspection or repair." image="septic-tank-pumping" crumbs={[{ label: 'Contact' }]} />
+  <section class="section contact-section" aria-labelledby="contact-heading">
+    <div class="container contact-inner">
+      <div class="contact-info">
+        <h2 id="contact-heading">Tell Us About Your Project</h2>
+        <p class="contact-intro">Whether your tank is due for pumping, drains are backing up, you have an escrow inspection coming or you need a new system, send a short description and the best number to reach you. It helps to include your ZIP code, the type of property, when the tank was last pumped, whether you know where the lid is and any escrow or closing date if you know it. Our team will follow up to schedule a visit. Repair and replacement quotes are free, with no obligation.</p>
+        <div class="contact-item">
+          <div class="contact-icon"><Icon name="phone" size={20} /></div>
+          <div class="contact-detail"><h3>Phone</h3><a href={tel} class="contact-link contact-phone">{site.phoneDisplay}</a><p>Call anytime.</p></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><Icon name="map" size={20} /></div>
+          <div class="contact-detail"><h3>Service Area</h3><address>{site.city} and nearby {site.county} communities</address></div>
+        </div>
+      </div>
+      <div class="contact-map"><iframe title={`Map of ${site.city}, ${site.stateAbbr}`} src={`https://www.google.com/maps?q=${encodeURIComponent(`${site.city}, ${site.stateAbbr}`)}&z=10&output=embed`} width="100%" height="420" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    </div>
+  </section>
+  <AreasChips compact />
+</Base>

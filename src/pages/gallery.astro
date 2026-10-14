@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Cta from '../components/Cta.astro';
+import { services } from '../data/services';
+import { site, withBrand } from '../data/site';
+
+const extras = [
+  { img: 'gallery-1', label: 'Pumping a Residential Septic Tank' },
+  { img: 'gallery-3', label: 'Vacuum Truck Hose and Valves' },
+  { img: 'gallery-5', label: 'Septic Risers at Grade' },
+  { img: 'gallery-2', label: 'New Septic Tank and Leach Line Parts' },
+  { img: 'gallery-4', label: 'Pump Truck at a Desert Home' },
+];
+const items = [
+  ...services.flatMap(s => [{ img: s.slug, label: s.name }, { img: `${s.slug}-2`, label: s.name }]),
+  ...extras,
+];
+---
+<Base title={withBrand('Septic Work Gallery')} description="Septic tanks, seepage pits, leach fields and pump trucks: images of the septic pumping and repair work we do for Antelope Valley homes and businesses." nav="gallery">
+  <PageHero title="Septic Work Gallery" sub="Septic tanks, seepage pits, leach fields and pump trucks. Illustrations of the kind of work we do, not photos of specific client properties." image="gallery-1" crumbs={[{ label: 'Gallery' }]} />
+  <section class="section gallery-section" aria-labelledby="gallery-page-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Inspiration</p>
+        <h2 id="gallery-page-heading">Septic Work Around Lancaster</h2>
+        <p class="section-sub">Use these ideas as a starting point when you talk with our crew about layout, materials, railings and finish.</p>
+      </div>
+      <div class="gallery-grid">
+        {items.map((g, i) => (
+          <div class:list={['gallery-item', { 'gallery-item--large': i === 0 }]}>
+            <picture><source type="image/webp" srcset={`/images/gallery/${g.img}.webp`} /><img src={`/images/gallery/${g.img}.jpg`} alt={`${g.label} in the Lancaster area`} loading="lazy" decoding="async" width="800" height="600" /></picture>
+            <div class="gallery-overlay"><span>{g.label}</span></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <Cta />
+</Base>

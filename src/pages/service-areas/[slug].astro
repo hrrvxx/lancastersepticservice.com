@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Cta from '../../components/Cta.astro';
+import AreasChips from '../../components/AreasChips.astro';
+import LocalArea from '../../components/LocalArea.astro';
+import { areas } from '../../data/areas';
+import { services } from '../../data/services';
+import { serviceHref } from '../../data/localServices';
+import { site, withBrand } from '../../data/site';
+import type { Area } from '../../data/types';
+
+export function getStaticPaths() {
+  return areas.map(a => ({ params: { slug: a.slug }, props: { area: a } }));
+}
+const { area: a } = Astro.props as { area: Area };
+const heroImages = ['gallery-4', 'septic-tank-pumping-2', 'seepage-pit-pumping', 'septic-inspection', 'leach-field-repair', 'septic-risers-2'];
+const image = heroImages[areas.findIndex(x => x.slug === a.slug) % heroImages.length];
+const schema = [{
+  '@type': 'Service',
+  name: `Septic Tank Pumping in ${a.name}, ${site.stateAbbr}`,
+  serviceType: 'Septic tank pumping',
+  provider: { '@id': `${site.url}/#org` },
+  areaServed: { '@type': 'City', name: a.name },
+  url: `${site.url}/service-areas/${a.slug}`,
+}];
+---
+<Base title={a.pageTitle ?? withBrand(`Septic Service in ${a.name}, ${site.stateAbbr}`)} description={a.metaDescription} nav="areas" schema={schema}>
+  <PageHero title={a.heading ?? `Septic Tank Pumping in ${a.name}, ${site.state}`} sub={a.heroSub} image={image} crumbs={[{ href: '/service-areas', label: 'Service Areas' }, { label: a.name }]} />
+  <section class="section">
+    <div class="container">
+      <div class="about-text-wrap" style="max-width:760px;margin:0 auto;">
+        {a.paragraphs.map(p => <p>{p}</p>)}
+        <h3 style="margin:28px 0 12px;font-size:16px;font-weight:600;">Neighborhoods &amp; Landmarks</h3>
+        <p>{a.neighborhoods.join(' · ')}</p>
+        <p><em>{a.driveNote}</em></p>
+        <h3 id="services" style="margin:28px 0 12px;font-size:16px;font-weight:600;scroll-margin-top:90px;">Septic Services in {a.name}</h3>
+        <ul style="margin:0 0 24px;padding-left:20px;line-height:1.8;list-style:disc;">
+          {services.map(s => <li><a href={serviceHref(a.slug, s.slug)}>{s.name} in {a.name}</a></li>)}
+        </ul>
+        <p>Our crew is a locally owned <a href="/">{site.city} {site.niche}</a> serving {a.name} and the rest of the {site.region}.</p>
+        <a href="/contact" class="btn btn-primary"><span>Get a Free Quote in {a.name}</span></a>
+      </div>
+      <div style="max-width:860px;margin:48px auto 0;"><LocalArea area={a} /></div>
+    </div>
+  </section>
+  <AreasChips compact />
+  <Cta city={a.name === site.city ? undefined : a.name} />
+</Base>
