@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://killeenbackflowtesting.com/sitemap-index.xml
+Sitemap: https://lancastersepticservice.com/sitemap-index.xml
