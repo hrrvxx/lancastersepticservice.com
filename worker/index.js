@@ -27,8 +27,8 @@ export default {
 // ---------- lead form ----------
 
 async function handleLead(request, env) {
-  // Secrets: RESEND_API_KEY, TURNSTILE_SECRET. Vars: LEAD_TO, MAIL_FROM, SITE_NAME, SITE_PHONE (wrangler.jsonc).
-  if (!env.RESEND_API_KEY) return json({ ok: false, error: 'lead delivery not configured' }, 503);
+  // Binding: EMAIL (Cloudflare Email Sending). Secrets: TURNSTILE_SECRET, HUB_FORM_KEY, RESEND_API_KEY (optional fallback). Vars: LEAD_TO, MAIL_FROM, SITE_NAME, SITE_PHONE (wrangler.jsonc).
+  if (!env.EMAIL && !env.RESEND_API_KEY) return json({ ok: false, error: 'lead delivery not configured' }, 503);
 
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
   if (env.LEAD_LIMITER) {
@@ -163,7 +163,20 @@ async function saveToHub(env, lead, spamReason) {
   }
 }
 
+// Email: Cloudflare Email Sending (EMAIL binding, domain onboarded in Email Service) with Resend as a
+// fallback while RESEND_API_KEY is still set. Payload uses Resend's shape: from/reply_to as "Name <addr>".
 async function sendEmail(env, payload) {
+  if (env.EMAIL) {
+    try {
+      const msg = { from: parseAddress(payload.from), to: payload.to, subject: payload.subject, html: payload.html, text: payload.text };
+      if (payload.reply_to) msg.replyTo = parseAddress(payload.reply_to);
+      await env.EMAIL.send(msg);
+      return { ok: true, status: 200, error: null };
+    } catch (err) {
+      console.error('email send failed', err?.code, err?.message);
+      if (!env.RESEND_API_KEY) return { ok: false, status: 0, error: `${err?.code || ''} ${err?.message || err}` };
+    }
+  }
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -174,6 +187,12 @@ async function sendEmail(env, payload) {
   } catch (err) {
     return { ok: false, status: 0, error: String(err) };
   }
+}
+
+// "Brand <a@b.com>" -> { email, name }
+function parseAddress(a) {
+  const m = String(a).match(/^\s*(.*?)\s*<([^>]+)>\s*$/);
+  return m ? (m[1] ? { email: m[2], name: m[1] } : { email: m[2] }) : { email: String(a).trim() };
 }
 
 // ---------- email bodies ----------
