@@ -1,6 +1,6 @@
 {
   // Cloudflare Worker serving the static Astro build, plus the /api/lead form endpoint.
-  // Secrets (set in the dashboard, never committed): TURNSTILE_SECRET, HUB_FORM_KEY; RESEND_API_KEY only as a fallback.
+  // Secrets (set in the dashboard, never committed): TURNSTILE_SECRET, HUB_FORM_KEY.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "lancastersepticservice-com",
   "main": "worker/index.js",
