@@ -20,7 +20,7 @@
     "LEAD_TO": "septic@lancastersepticservice.com",
     "MAIL_FROM": "Lancaster Septic Service <septic@lancastersepticservice.com>",
     // RNR dashboard: form leads are also stored there.
-    "HUB_URL": "https://dashboard.dropservice.agency",
+    "HUB_URL": "https://dashboard.dsmagency.io",
     "HUB_SITE_ID": "lancasterseptic",
     // Form spam scoring: ZIPs outside these prefixes count against a lead (Antelope Valley = 935xx, Agua Dulce = 913xx).
     "SERVICE_ZIP_PREFIXES": "93,91"

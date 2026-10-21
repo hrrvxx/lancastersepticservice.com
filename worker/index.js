@@ -231,7 +231,7 @@ function json(obj, status = 200) {
 
 // ---------- RNR Stats bot log ----------
 // Every page request (static media skipped) goes to the rnr-stats Worker over the STATS service binding
-// (RPC entrypoint Hits; see stats/SPEC.md). Feeds the Bots page at stats.dropservice.agency.
+// (RPC entrypoint Hits; see stats/SPEC.md). Feeds the Bots page at stats.dsmagency.io.
 const STATS_SKIP = /\.(css|js|mjs|map|png|jpe?g|gif|svg|ico|webp|avif|woff2?|ttf|eot|mp4|webm|mp3)$/i;
 async function statsHit(env, request, status) {
   try {
