@@ -10,7 +10,7 @@ const REDIRECT_HOSTS = new Set([
 ]);
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const isCanonicalHttp = url.hostname === CANONICAL_HOST && url.protocol === 'http:';
     if (REDIRECT_HOSTS.has(url.hostname) || isCanonicalHttp) {
@@ -20,7 +20,9 @@ export default {
       if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
       return handleLead(request, env);
     }
-    return env.ASSETS.fetch(request);
+    const res = await env.ASSETS.fetch(request);
+    if (env.STATS) ctx.waitUntil(statsHit(env, request, res.status));
+    return res;
   },
 };
 
@@ -225,4 +227,20 @@ function esc(s) {
 
 function json(obj, status = 200) {
   return Response.json(obj, { status, headers: { 'Cache-Control': 'no-store' } });
+}
+
+// ---------- RNR Stats bot log ----------
+// Every page request (static media skipped) goes to the rnr-stats Worker over the STATS service binding
+// (RPC entrypoint Hits; see stats/SPEC.md). Feeds the Bots page at stats.dropservice.agency.
+const STATS_SKIP = /\.(css|js|mjs|map|png|jpe?g|gif|svg|ico|webp|avif|woff2?|ttf|eot|mp4|webm|mp3)$/i;
+async function statsHit(env, request, status) {
+  try {
+    const url = new URL(request.url);
+    if ((request.method !== 'GET' && request.method !== 'HEAD') || STATS_SKIP.test(url.pathname)) return;
+    const cf = request.cf || {};
+    await env.STATS.hit({
+      site: env.HUB_SITE_ID, path: url.pathname, status, ua: request.headers.get('user-agent') || '', ip: request.headers.get('cf-connecting-ip') || '',
+      country: cf.country, region: cf.region, city: cf.city, asn: cf.asn, isp: cf.asOrganization, ref: request.headers.get('referer') || '',
+    });
+  } catch (e) {}
 }

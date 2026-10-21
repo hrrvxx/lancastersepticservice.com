@@ -29,6 +29,8 @@
   "ratelimits": [
     { "name": "LEAD_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
   ],
+  // RNR Stats: server-side page requests for the Bots page (RPC, not public).
+  "services": [{ "binding": "STATS", "service": "rnr-stats", "entrypoint": "Hits" }],
   "keep_vars": true,
   "observability": { "enabled": true }
 }
