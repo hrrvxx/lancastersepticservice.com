@@ -69,3 +69,10 @@
 @media (max-width: 600px) {
   .btn { white-space: normal; text-align: center; justify-content: center; max-width: 100%; }
 }
+
+/* Keyword section on service + city x service pages (src/data/seo.ts). */
+.kw-section { margin: 32px 0 28px; padding: 24px; background: var(--bg-light); border-left: 4px solid var(--accent); border-radius: var(--radius); }
+.service-detail-body .kw-section h2 { font-size: clamp(20px, 2.4vw, 26px); margin-bottom: 12px; }
+.kw-list { display: grid; gap: 10px; margin-top: 14px; }
+.kw-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.5; color: var(--text-mid); }
+.kw-list li svg { flex-shrink: 0; color: var(--accent); margin-top: 3px; }

@@ -8,6 +8,7 @@ import { services } from '../../data/services';
 import { areas } from '../../data/areas';
 import { localService } from '../../data/localServices';
 import { site, tel, withBrand } from '../../data/site';
+import { seoFor } from '../../data/seo';
 import type { Service } from '../../data/types';
 
 export function getStaticPaths() {
@@ -17,21 +18,23 @@ const { service: s } = Astro.props as { service: Service };
 const idx = services.findIndex(x => x.slug === s.slug);
 const others = services.filter(x => x.slug !== s.slug);
 const cities = areas.filter(a => localService(a.slug, s.slug));
+const kw = seoFor(s.slug, site.city);
+const faqs = [...s.faqs, ...(kw?.faqs ?? [])];
 const related = [services[(idx + 1) % services.length], services[(idx + 2) % services.length]];
 const schema = [
   {
     '@type': 'Service',
     name: `${s.name} in ${site.city}, ${site.stateAbbr}`,
     serviceType: s.name,
-    description: s.metaDescription,
+    description: kw?.metaDesc ?? s.metaDescription,
     provider: { '@id': `${site.url}/#org` },
     areaServed: { '@type': 'City', name: site.city },
     url: `${site.url}/services/${s.slug}`,
   },
-  { '@type': 'FAQPage', mainEntity: s.faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
 ---
-<Base title={withBrand(`${s.name} in ${site.city}, ${site.stateAbbr}`)} description={s.metaDescription} nav="services" schema={schema} image={`/images/gallery/${s.slug}.jpg`}>
+<Base title={kw?.title ?? withBrand(`${s.name} in ${site.city}, ${site.stateAbbr}`)} description={kw?.metaDesc ?? s.metaDescription} nav="services" schema={schema} image={`/images/gallery/${s.slug}.jpg`}>
   <PageHero title={`${s.name} in ${site.city}, ${site.state}`} sub={s.heroSub} image={s.slug} crumbs={[{ href: '/services', label: 'Services' }, { label: s.name }]} />
 
   <section class="section service-detail-section" aria-labelledby="service-detail-heading">
@@ -43,6 +46,13 @@ const schema = [
         </picture>
         <h2 id="service-detail-heading">About {s.name}</h2>
         {s.intro.map(p => <p>{p}</p>)}
+        {kw && (
+          <section class="kw-section" aria-labelledby="kw-heading">
+            <h2 id="kw-heading">{kw.section.h2}</h2>
+            <p>{kw.section.body}</p>
+            <ul class="kw-list">{kw.section.bullets.map(b => <li><Icon name="check" size={16} /><span>{b}</span></li>)}</ul>
+          </section>
+        )}
         <p>Looking for a full-service <a href="/">{site.city} {site.niche}</a>? Our crew handles every service, from routine pumping to inspections, repairs and new systems.</p>
         <p class="related-inline"><strong>Related:</strong> {related.map((r, i) => <>{i > 0 && ' · '}<a href={`/services/${r.slug}`}>{r.name}</a></>)} &mdash; <a href="/services">View All Services &rarr;</a></p>
       </div>
@@ -62,7 +72,7 @@ const schema = [
     </div>
   </section>
 
-  <Faq faqs={s.faqs} eyebrow="Common Questions" />
+  <Faq faqs={faqs} eyebrow="Common Questions" />
 
   {cities.length > 0 && (
     <section class="section areas-section areas-section--compact" aria-labelledby="service-cities-heading">
