@@ -53,6 +53,7 @@ const schema = [
             <ul class="kw-list">{kw.section.bullets.map(b => <li><Icon name="check" size={16} /><span>{b}</span></li>)}</ul>
           </section>
         )}
+        <p class="budget-box"><strong>Planning your budget?</strong> See national price ranges for septic pumping, inspections, repairs and new systems in our <a href="/cost-guide">Septic Cost Guide</a>.</p>
         <p>Looking for a full-service <a href="/">{site.city} {site.niche}</a>? Our crew handles every service, from routine pumping to inspections, repairs and new systems.</p>
         <p class="related-inline"><strong>Related:</strong> {related.map((r, i) => <>{i > 0 && ' · '}<a href={`/services/${r.slug}`}>{r.name}</a></>)} &mdash; <a href="/services">View All Services &rarr;</a></p>
       </div>

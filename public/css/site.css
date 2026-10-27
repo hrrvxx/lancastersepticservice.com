@@ -76,3 +76,23 @@
 .kw-list { display: grid; gap: 10px; margin-top: 14px; }
 .kw-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.5; color: var(--text-mid); }
 .kw-list li svg { flex-shrink: 0; color: var(--accent); margin-top: 3px; }
+
+/* Cost guide (/cost-guide) + "Planning your budget" box on service pages. */
+.cost-guide h2 { font-size: clamp(22px, 2.6vw, 30px); margin: 0 0 14px; }
+.cost-table-wrap { overflow-x: auto; margin: 20px 0 10px; border: 1px solid var(--border); border-radius: var(--radius); }
+.cost-table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 520px; }
+.cost-table th, .cost-table td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+.cost-table thead th { background: var(--dark); color: #fff; font-weight: 600; }
+.cost-table tbody th { color: var(--text); font-weight: 600; }
+.cost-table tbody tr:nth-child(even) { background: var(--bg-light); }
+.cost-table a, .cost-block a, .cost-sources a, .budget-box a { color: var(--accent); text-decoration: underline; }
+.cost-updated { font-size: 13.5px; color: var(--text-light); }
+.cost-block { margin-top: 44px; }
+.cost-block h3 { font-size: 16px; margin: 18px 0 4px; }
+.cost-sources { padding-left: 20px; list-style: decimal; display: grid; gap: 8px; font-size: 14.5px; }
+.budget-box { margin: 0 0 28px; padding: 16px 20px; border: 1px dashed var(--accent); border-radius: var(--radius); font-size: 15px; }
+.budget-box strong { color: var(--text); }
+@media (max-width: 600px) {
+  .cost-table { min-width: 0; font-size: 14px; }
+  .cost-table th, .cost-table td { padding: 10px 8px; }
+}

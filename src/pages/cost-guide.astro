@@ -1,0 +1,146 @@
+---
+// Septic cost guide (rnr-site Phase 5): published national ranges with named sources, never our prices.
+// Every figure must appear in `sources`; re-verify the numbers when updating `updated`.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import { site } from '../data/site';
+
+const updated = 'October 27, 2026';
+const sources = [
+  { id: 'pump', name: 'Angi, "How Much Does It Cost to Pump a Septic Tank?" (updated Oct 14, 2026)', url: 'https://www.angi.com/articles/how-much-does-septic-tank-pumping-cost.htm' },
+  { id: 'inspect', name: 'Angi, "How Much Does a Septic Inspection Cost?" (updated Oct 7, 2026)', url: 'https://www.angi.com/articles/septic-inspection-cost.htm' },
+  { id: 'repair', name: 'Angi, "How Much Does Septic Tank Repair Cost?" (updated Sep 15, 2026)', url: 'https://www.angi.com/articles/how-much-does-repairing-septic-tank-cost.htm' },
+  { id: 'field', name: 'Angi, "Cost to Replace Septic Tank and Drain Field" (updated Jul 8, 2026)', url: 'https://www.angi.com/articles/how-much-new-drain-fields-foot.htm' },
+  { id: 'install', name: 'Angi, "How Much Does a Septic System Cost?" (updated Oct 14, 2026)', url: 'https://www.angi.com/articles/what-does-it-cost-install-septic-system.htm' },
+  { id: 'jet', name: 'Angi, "How Much Does Hydro Jetting Cost?" (updated Oct 23, 2026)', url: 'https://www.angi.com/articles/hydro-jetting-cost.htm' },
+  { id: 'locate', name: 'Angi, "How Much Does It Cost to Locate a Septic Tank?" (updated Aug 3, 2026)', url: 'https://www.angi.com/articles/cost-to-locate-septic-tank.htm' },
+  { id: 'cesspool', name: 'Angi, "What Is a Cesspool?" (updated Jul 9, 2026)', url: 'https://www.angi.com/articles/what-is-a-cesspool.htm' },
+];
+const src = (id: string) => sources.findIndex(s => s.id === id) + 1;
+
+const rows = [
+  { project: 'Septic tank pumping', range: '$292 – $565 (average $428); 1,000-gallon tank $325 – $700', source: 'pump', href: '/services/septic-tank-pumping' },
+  { project: 'Cesspool pumping', range: '$250 – $600 (average about $400)', source: 'cesspool', href: '/services/seepage-pit-pumping' },
+  { project: 'Septic inspection', range: '$200 – $900 (average $550); California average about $800', source: 'inspect', href: '/services/septic-inspection' },
+  { project: 'Septic tank repair', range: '$627 – $3,041 (average $1,828)', source: 'repair', href: '/services/septic-repair' },
+  { project: 'Baffle, pump or lid replacement', range: 'baffles $300 – $900; pump $250 – $1,000; lid $150 – $500', source: 'repair', href: '/services/septic-repair' },
+  { project: 'Drain field (leach field) replacement', range: 'around $7,000; septic tank and drain field together $5,000 – $12,000', source: 'field', href: '/services/leach-field-repair' },
+  { project: 'New septic system', range: '$3,590 – $12,463 (average $8,016)', source: 'install', href: '/services/septic-installation' },
+  { project: 'Percolation test', range: '$700 – $2,000', source: 'install', href: '/services/septic-installation' },
+  { project: 'Septic permits (new or full replacement)', range: '$450 – $2,300 in most areas', source: 'install', href: '' },
+  { project: 'Septic tank riser', range: '$300 – $600', source: 'install', href: '/services/septic-risers' },
+  { project: 'Hydro jetting a sewer or septic line', range: '$350 – $600 (average $475); up to $2,000 for severe blockages', source: 'jet', href: '/services/septic-line-jetting' },
+  { project: 'Septic tank locating', range: '$100 – $900', source: 'locate', href: '/services/septic-tank-locating' },
+];
+
+const drivers = [
+  {
+    h: 'Septic tank pumping cost', href: '/services/septic-tank-pumping', link: 'Septic tank pumping',
+    p: 'Tank size and access set most of the price. Angi puts the national average at $428, with a 1,000-gallon tank at about $325 to $700 and larger tanks costing more because there is more to pump and haul.',
+    s: 'pump',
+    bullets: ['Tank size in gallons', 'How long since the last pump-out (packed sludge takes longer)', 'Digging to uncover lids with no risers', 'Distance and access for the truck', 'Extra work found while the tank is open, like a broken baffle'],
+  },
+  {
+    h: 'Septic inspection cost', href: '/services/septic-inspection', link: 'Septic inspections',
+    p: 'A basic check costs less than a detailed inspection for a home sale. Angi reports a national average of $550, with California among the higher-cost states at about $800, and uncovering a buried tank can add $50 to $250.',
+    s: 'inspect',
+    bullets: ['Basic visual check vs a full inspection for escrow', 'Whether the tank must be dug up to open it', 'Pumping the tank during the inspection', 'Camera inspection of the lines', 'Size and type of system'],
+  },
+  {
+    h: 'Septic repair cost', href: '/services/septic-repair', link: 'Septic repair',
+    p: 'Most repairs are parts, not whole systems. Nationally, typical repairs run $627 to $3,041, with baffles at $300 to $900, effluent pumps at $250 to $1,000 and replacement lids at $150 to $500.',
+    s: 'repair',
+    bullets: ['Which part failed: baffle, pump, float, lid or line', 'How deep the tank and lines are buried', 'Whether the tank itself is cracked', 'Damage to the line between the house and tank', 'Permits for larger repairs'],
+  },
+  {
+    h: 'Leach field and septic replacement cost', href: '/services/leach-field-repair', link: 'Leach field repair',
+    p: 'Replacing a failed drain field runs around $7,000 on national averages, and replacing the tank and field together is about $5,000 to $12,000. A brand-new system averages $8,016, with a percolation test adding $700 to $2,000 and permits $450 to $2,300.',
+    s: 'install',
+    bullets: ['Soil and percolation test results', 'Leach field vs seepage pit, and how large it must be', 'Tank material and size', 'Excavation, access and removing the old system', 'County design review, permits and inspections'],
+  },
+  {
+    h: 'Hydro jetting, riser and locating cost', href: '/services/septic-line-jetting', link: 'Hydro jetting',
+    p: 'Smaller jobs keep a system easy and cheap to service. Hydro jetting averages $475 nationally, a septic tank riser runs $300 to $600, and finding a lost tank costs about $100 to $900 depending on depth and equipment.',
+    s: 'jet',
+    bullets: ['Length of line and how bad the clog or roots are', 'Access through a cleanout or the tank', 'Number of tank openings that need risers', 'Tank depth and whether records exist', 'Camera inspection after jetting'],
+  },
+];
+
+const lower = [
+  'Pump on schedule: a tank pumped every few years costs less to service than one packed with sludge.',
+  'Add risers so future pump-outs and inspections do not include digging.',
+  'Fix a broken baffle or failed pump early, before solids reach the leach field or seepage pit.',
+  'Keep grease, wipes and harsh chemicals out of the drains.',
+  'Spread laundry and heavy water use over the week to go easier on the drainage side.',
+];
+
+const faqs = [
+  { q: 'How much does it cost to pump a septic tank?', a: 'Angi puts the 2026 national average at $428, with most homeowners paying $292 to $565. A 1,000-gallon tank runs about $325 to $700. Larger tanks, buried lids and long gaps between pump-outs push the price up.' },
+  { q: 'How much does a new septic system cost?', a: 'National data shows most new systems cost $3,590 to $12,463, averaging $8,016. Add a percolation test at $700 to $2,000 and permits at $450 to $2,300. Soil, lot size and whether you need a leach field or seepage pit make the biggest difference.' },
+  { q: 'How much does it cost to replace a leach field?', a: 'Angi lists drain field replacement at around $7,000 on average, and replacing both the septic tank and drain field at $5,000 to $12,000. Field size, soil and access drive the final number, and county permits and inspections apply.' },
+  { q: 'Is a septic inspection worth it when buying a house?', a: 'A full inspection averages about $550 nationally and around $800 in California. That is small next to septic repair averages near $1,800 or a new system averaging over $8,000, so an inspection helps you know what you are buying.' },
+  { q: 'Are these your prices?', a: `No. These are published national ranges from the sources listed below, shown to help you plan. ${site.name} gives a free quote for your property after we know what the job involves, and costs in the ${site.region} can be higher or lower than national averages. County permit fees in Los Angeles and Kern counties set their own amounts.` },
+];
+
+const schema = [
+  { '@type': 'Article', headline: 'Septic Cost Guide: 2026 Price Ranges', dateModified: '2026-10-27', author: { '@id': `${site.url}/#org` }, publisher: { '@id': `${site.url}/#org` }, mainEntityOfPage: `${site.url}/cost-guide` },
+  { '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+<Base title="Septic Cost Guide 2026: Pumping, Repair, Install & More" description="How much does septic tank pumping cost? 2026 national price ranges for pumping, inspections, repairs, leach fields and new systems, with sources." nav="services" schema={schema}>
+  <PageHero title="Septic Cost Guide" sub={`2026 national price ranges for septic pumping, inspections, repairs, leach fields and new systems, with the sources behind every number. Planning septic work in the ${site.region}? Use these to set a budget, then get a free quote for your property.`} image="septic-inspection" crumbs={[{ label: 'Cost Guide' }]} />
+
+  <section class="section cost-guide" aria-labelledby="cost-table-heading">
+    <div class="container" style="max-width:920px;">
+      <h2 id="cost-table-heading">Septic Costs at a Glance</h2>
+      <p>These are <strong>published national ranges, not our prices</strong>. Every figure links to its source below. Costs in Southern California often run above national averages, and county permit fees are set by Los Angeles County or Kern County, so treat these as a starting point for your budget.</p>
+      <div class="cost-table-wrap">
+        <table class="cost-table">
+          <thead><tr><th scope="col">Project</th><th scope="col">Typical national cost</th><th scope="col">Source</th></tr></thead>
+          <tbody>
+            {rows.map(r => (
+              <tr>
+                <th scope="row">{r.href ? <a href={r.href}>{r.project}</a> : r.project}</th>
+                <td>{r.range}</td>
+                <td><a href={`#source-${src(r.source)}`}>[{src(r.source)}]</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="cost-updated">Last updated {updated}.</p>
+
+      {drivers.map(d => (
+        <div class="cost-block">
+          <h2>{d.h}</h2>
+          <p>{d.p} <a href={`#source-${src(d.s)}`}>[{src(d.s)}]</a></p>
+          <h3>What drives the price</h3>
+          <ul class="kw-list">{d.bullets.map(b => <li><Icon name="check" size={16} /><span>{b}</span></li>)}</ul>
+          <p class="related-inline"><strong>Related:</strong> <a href={d.href}>{d.link} in {site.city}</a></p>
+        </div>
+      ))}
+
+      <div class="cost-block">
+        <h2>Ways to Lower Septic Costs</h2>
+        <ul class="kw-list">{lower.map(b => <li><Icon name="check" size={16} /><span>{b}</span></li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <Faq faqs={faqs} eyebrow="Septic Cost Questions" />
+
+  <section class="section" aria-labelledby="sources-heading">
+    <div class="container" style="max-width:920px;">
+      <h2 id="sources-heading" style="font-size:22px;margin-bottom:12px;">Sources</h2>
+      <ol class="cost-sources">
+        {sources.map((s, i) => <li id={`source-${i + 1}`}><a href={s.url} rel="noopener nofollow" target="_blank">{s.name}</a></li>)}
+      </ol>
+      <p class="cost-updated">National figures as published by each source on the date shown. {site.name} is a local septic service company; ranges are for planning only and are not a quote.</p>
+    </div>
+  </section>
+
+  <Cta />
+</Base>
