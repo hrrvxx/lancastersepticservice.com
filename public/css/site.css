@@ -63,3 +63,9 @@
 @media (max-width: 860px) { .page-hero-inner--form { grid-template-columns: 1fr; gap: 28px; } }
 .contact-map { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .contact-map iframe { display: block; border: 0; }
+/* Long localized button labels ("Get a Free Warehouse & Industrial Cleaning Quote in Virginia Beach")
+   must wrap on phones instead of widening the page. */
+.service-detail-body, .service-detail-aside, .about-text, .local-content, .longform-inner { min-width: 0; }
+@media (max-width: 600px) {
+  .btn { white-space: normal; text-align: center; justify-content: center; max-width: 100%; }
+}
