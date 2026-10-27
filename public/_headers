@@ -5,3 +5,10 @@
 
 /images/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Sitemaps are for crawlers, not search results (keeps them out of GSC "Crawled - not indexed").
+/sitemap-index.xml
+  X-Robots-Tag: noindex
+
+/sitemap-0.xml
+  X-Robots-Tag: noindex

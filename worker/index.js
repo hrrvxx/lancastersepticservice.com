@@ -9,12 +9,22 @@ const REDIRECT_HOSTS = new Set([
   'lancastersepticservice-com.dropservicemarketingagency.workers.dev',
 ]);
 
+// Canonical URLs have no trailing slash or .html (sitemap <loc> = canonical):
+// /services/x/ and /services/x.html -> /services/x, /index.html -> /.
+function canonicalPath(p) {
+  let out = p.replace(/\/index(\.html)?$/, '/').replace(/\.html$/, '');
+  if (out.length > 1) out = out.replace(/\/+$/, '');
+  return out || '/';
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const isCanonicalHttp = url.hostname === CANONICAL_HOST && url.protocol === 'http:';
-    if (REDIRECT_HOSTS.has(url.hostname) || isCanonicalHttp) {
-      return Response.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
+    const path = canonicalPath(url.pathname);
+    // Host, http and path fixes in one 301 hop (asset trailing-slash handling would answer 307).
+    if (REDIRECT_HOSTS.has(url.hostname) || isCanonicalHttp || path !== url.pathname) {
+      return Response.redirect(`https://${CANONICAL_HOST}${path}${url.search}`, 301);
     }
     if (url.pathname === '/api/lead') {
       if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
